@@ -1,0 +1,49 @@
+services:
+  embeddings:
+    build: ./embedding
+    environment:
+      EMBEDDING_MODEL: ${EMBEDDING_MODEL:-sentence-transformers/all-MiniLM-L6-v2}
+      HF_HOME: /models
+    volumes:
+      - embedding_model_cache:/models
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8000/health"]
+      interval: 15s
+      timeout: 10s
+      retries: 20
+      start_period: 120s
+  api:
+    build: ./server
+    env_file: [.env]
+    environment:
+      # Reuse the existing Qdrant container on the Windows host; Compose does not own its lifecycle.
+      QDRANT_URL: ${QDRANT_URL_DOCKER:-http://host.docker.internal:6333}
+      EMBEDDING_SERVICE_URL: http://embeddings:8000
+      EMBEDDING_MODEL: ${EMBEDDING_MODEL:-sentence-transformers/all-MiniLM-L6-v2}
+      PDF_LIBRARY_PATH: /app/pdfs
+      UPLOAD_DIR: /app/data/uploads
+      DOCUMENT_METADATA_DIR: /app/data/documents
+      SERVER_PORT: 8080
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:5173}
+      GOOGLE_APPLICATION_CREDENTIALS: /run/secrets/firebase-service-account.json
+    ports: ["8080:8080"]
+    volumes:
+      - ./:/app/pdfs:ro
+      - ./firebase-service-account.json:/run/secrets/firebase-service-account.json:ro
+      - ./data:/app/data
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      embeddings: { condition: service_healthy }
+  web:
+    build:
+      context: ./web
+      args:
+        VITE_FIREBASE_API_KEY: ${VITE_FIREBASE_API_KEY:-}
+        VITE_FIREBASE_AUTH_DOMAIN: ${VITE_FIREBASE_AUTH_DOMAIN:-}
+        VITE_FIREBASE_PROJECT_ID: ${VITE_FIREBASE_PROJECT_ID:-}
+        VITE_FIREBASE_APP_ID: ${VITE_FIREBASE_APP_ID:-}
+    ports: ["5173:80"]
+    depends_on: [api]
+volumes:
+  embedding_model_cache:

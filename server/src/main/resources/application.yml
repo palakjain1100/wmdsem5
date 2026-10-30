@@ -1,0 +1,25 @@
+server:
+  port: ${SERVER_PORT:8080}
+  error:
+    include-message: always
+spring:
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+app:
+  firebase-project-id: ${FIREBASE_PROJECT_ID:}
+  frontend-url: ${FRONTEND_URL:http://localhost:5173}
+  pdf-library-path: ${PDF_LIBRARY_PATH:../}
+  upload-dir: ${UPLOAD_DIR:./data/uploads}
+  document-metadata-dir: ${DOCUMENT_METADATA_DIR:./data/documents}
+  qdrant-url: ${QDRANT_URL:http://localhost:6333}
+  qdrant-collection: ${QDRANT_COLLECTION:document_chunks}
+  embedding-url: ${EMBEDDING_SERVICE_URL:http://localhost:8000}
+  embedding-model: ${EMBEDDING_MODEL:sentence-transformers/all-MiniLM-L6-v2}
+  embedding-dimensions: ${EMBEDDING_DIMENSIONS:384}
+  gemini-api-key: ${GEMINI_API_KEY:}
+  gemini-model: ${GEMINI_MODEL:gemini-2.5-flash}
+  chunk-size: 1100
+  chunk-overlap: 180
+  top-k: 6

@@ -1,0 +1,6 @@
+C:\Users\palak\Downloads\wmd\server\src\main\kotlin\app\docqa\ConversationService.kt
+C:\Users\palak\Downloads\wmd\server\src\main\kotlin\app\docqa\Models.kt
+C:\Users\palak\Downloads\wmd\server\src\main\kotlin\app\docqa\RagService.kt
+C:\Users\palak\Downloads\wmd\server\src\main\kotlin\app\docqa\DocumentService.kt
+C:\Users\palak\Downloads\wmd\server\src\main\kotlin\app\docqa\Infrastructure.kt
+C:\Users\palak\Downloads\wmd\server\src\main\kotlin\app\docqa\Application.kt
